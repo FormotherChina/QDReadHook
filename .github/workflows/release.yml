@@ -22,9 +22,6 @@ jobs:
           submodules: 'recursive'
           fetch-depth: 0
 
-      - name: touch
-        run: touch key.jks
-
       - name: base64-to-file
         id: write_file
         uses: timheuer/base64-to-file@v1.2
@@ -79,7 +76,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease
           ccache -s
-          
+
       - name: release-please-action
         uses: google-github-actions/release-please-action@v3
         with:
@@ -92,7 +89,7 @@ jobs:
         uses: meeDamian/github-release@v2.0.3
         with:
           files: app/build/outputs/apk/release/*.apk
-          token:  ${{ secrets.RELEASE_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
           allow_override: true
           gzip: false
 
