@@ -77,13 +77,6 @@ jobs:
           ./gradlew assembleRelease
           ccache -s
 
-      - name: release-please-action
-        uses: google-github-actions/release-please-action@v3
-        with:
-          token: ${{ secrets.RELEASE_TOKEN }}
-          release-type: node
-          package-name: release-please-action
-          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
 
       - name: Upload assets to a Release
         uses: meeDamian/github-release@v2.0.3
@@ -92,4 +85,13 @@ jobs:
           token: ${{ secrets.RELEASE_TOKEN }}
           allow_override: true
           gzip: false
+
+      - name: release-please-action
+        uses: google-github-actions/release-please-action@v3
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}
+          release-type: node
+          package-name: release-please-action
+          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
+
 
