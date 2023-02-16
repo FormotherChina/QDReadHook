@@ -266,6 +266,7 @@ data class OptionEntity(
      * @param enableDisableQSNModeDialog 启用关闭青少年模式弹框
      * @param enableHideComicBannerAd 启用隐藏漫画banner广告
      * @param homeOption 首页配置
+     * @param selectedOption 精选配置
      * @param findOption 发现配置
      * @param accountOption 用户页面配置
      * @param bookDetailOptions 书籍详情配置
@@ -278,6 +279,7 @@ data class OptionEntity(
         @SerialName("enableDisableQSNModeDialog") var enableDisableQSNModeDialog: Boolean = false,
         @SerialName("enableHideComicBannerAd") var enableHideComicBannerAd: Boolean = false,
         @SerialName("homeOption") var homeOption: HomeOption = HomeOption(),
+        @SerialName("selectedOption") var selectedOption: SelectedOption = SelectedOption(),
         @SerialName("findOption") var findOption: FindOption = FindOption(),
         @SerialName("AccountOption") var accountOption: AccountOption = AccountOption(),
         @SerialName("BookDetailOptions") var bookDetailOptions: BookDetailOptions = BookDetailOptions(),
@@ -288,16 +290,27 @@ data class OptionEntity(
          */
         @Keep
         @Serializable
-        @Immutable
         data class HomeOption(
-            @SerialName("homeConfigurations") var configurations: List<SelectedModel> = listOf(
+            @SerialName("homeConfigurations") var configurations: MutableList<SelectedModel> = mutableListOf(
                 SelectedModel("主页顶部宝箱提示"),
                 SelectedModel("书架每日导读"),
                 SelectedModel("书架去找书"),
-                SelectedModel("主页底部导航栏发现"),
                 SelectedModel("主页底部导航栏红点")
             ),
         )
+
+        /**
+         * 精选配置
+         * @param enableSelectedHide 启用隐藏精选
+         * @param configurations 精选配置列表
+         */
+        @Keep
+        @Serializable
+        data class SelectedOption(
+            @SerialName("enableSelectedHide") var enableSelectedHide: Boolean = false,
+            @SerialName("selectedConfigurations") var configurations: MutableList<SelectedModel> = mutableListOf()
+        )
+
 
         /**
          * 发现配置
@@ -435,7 +448,7 @@ fun readOptionEntity(): OptionEntity {
                             interceptConfigurations.updateSelectedListOptionEntity(newConfiguration)
                     }
                     val viewHideOptionConfigurations =
-                        viewHideOption.homeOption.configurations.toMutableList()
+                        viewHideOption.homeOption.configurations
                     val newViewHideOptionConfigurations =
                         newOptionEntity.viewHideOption.homeOption.configurations
                     if (viewHideOptionConfigurations.size != newViewHideOptionConfigurations.size) {

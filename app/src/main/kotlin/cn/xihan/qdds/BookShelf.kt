@@ -84,11 +84,12 @@ fun PackageParam.newBookShelfLayout(
         827 -> "s4.a\$a"
         in 834..843 -> "q4.a\$a"
         in 850..868 -> "r4.a\$a"
+        872 -> "p4.a\$a"
         else -> null
     }
     val needHookMethod = when (versionCode) {
         in 827..850 -> "b"
-        868 -> "c"
+        in 868..872 -> "c"
         else -> null
     }
     needHookClass?.hook {

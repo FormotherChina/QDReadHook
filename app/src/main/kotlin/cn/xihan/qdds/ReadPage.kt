@@ -23,6 +23,7 @@ fun PackageParam.customReadBackgroundPath(versionCode: Int) {
     val needHookClass = when (versionCode) {
         827 -> "d6.f"
         in 834..868 -> "b6.f"
+        872 -> "z5.f"
         else -> null
     }
     needHookClass?.hook {
@@ -49,7 +50,7 @@ fun PackageParam.readerPageChapterReviewPictures(
     enableShowReaderPageChapterSavePictureDialog: Boolean = false,
 ) {
     when (versionCode) {
-        868 -> {
+        in 868..872 -> {
             if (enableShowReaderPageChapterSaveRawPictures) {
                 findClass("com.qd.ui.component.modules.imagepreivew.QDUIGalleryActivity").hook {
                     injectMember {
@@ -115,38 +116,38 @@ fun PackageParam.readTimeDouble(
     enableVIPChapterTime: Boolean = false,
     doubleSpeed: Int = 5,
 ) {
-    when (versionCode) {
-        868 -> {
-            findClass("sf.a").hook {
-                injectMember {
-                    method {
-                        name = "d"
-                        paramCount(2)
-                    }
-                    afterHook {
-                        val list = result as? MutableList<*>
-                        if (list.isNullOrEmpty()) return@afterHook
-                        list.forEach { item ->
-                            item?.let {
-                                val totalTime = it.getParam<Long>("totalTime")
-                                val currentTime = System.currentTimeMillis()
-                                val startTime2 = currentTime - ((totalTime ?: 1000) * doubleSpeed)
-                                it.setParams(
-                                    "startTime" to startTime2,
-                                    "endTime" to currentTime,
-                                    "totalTime" to (currentTime - startTime2),
-                                )
-                                if (enableVIPChapterTime) {
-                                    it.setParam("chapterVIP", 1)
-                                }
-                            }
+    val needHookClass = when (versionCode) {
+        868 -> "sf.a"
+        872 -> "qf.a"
+        else -> null
+    }
+    needHookClass?.hook {
+        injectMember {
+            method {
+                name = "d"
+                paramCount(2)
+            }
+            afterHook {
+                val list = result as? MutableList<*>
+                if (list.isNullOrEmpty()) return@afterHook
+                list.forEach { item ->
+                    item?.let {
+                        val totalTime = it.getParam<Long>("totalTime")
+                        val currentTime = System.currentTimeMillis()
+                        val startTime2 = currentTime - ((totalTime ?: 1000) * doubleSpeed)
+                        it.setParams(
+                            "startTime" to startTime2,
+                            "endTime" to currentTime,
+                            "totalTime" to (currentTime - startTime2),
+                        )
+                        if (enableVIPChapterTime) {
+                            it.setParam("chapterVIP", 1)
                         }
-
                     }
                 }
+
             }
         }
+    } ?: "阅读时间加倍".printlnNotSupportVersion(versionCode)
 
-        else -> "阅读时间加倍".printlnNotSupportVersion(versionCode)
-    }
 }

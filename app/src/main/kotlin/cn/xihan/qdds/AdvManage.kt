@@ -218,20 +218,6 @@ fun PackageParam.disableBookshelfFloatWindow(versionCode: Int) {
  * 上级调用位置:com.qidian.QDReader.ui.activity.MainGroupActivity.checkAdTab()
  */
 fun PackageParam.disableBottomNavigationCenterAd(versionCode: Int) {
-//    val hookClassName = when (versionCode) {
-//        in 758..796 -> "com.qidian.QDReader.ui.activity.MainGroupActivity\$t"
-//        in 800..850 -> "com.qidian.QDReader.ui.activity.MainGroupActivity\$a"
-//        else -> null
-//    }
-//    hookClassName?.hook {
-//        injectMember {
-//            method {
-//                name = "c"
-//            }
-//            intercept()
-//        }
-//    } ?: "移除底部导航栏中心广告".printlnNotSupportVersion(versionCode)
-
     when (versionCode) {
         in 758..880 -> {
             findClass("com.qidian.QDReader.ui.activity.MainGroupActivity").hook {
@@ -303,6 +289,7 @@ fun PackageParam.disableReadPageFloatAd(versionCode: Int) {
         in 827..834 -> "K"
         in 842..843 -> "M"
         in 850..868 -> "I"
+        872 -> "G"
         else -> null
     }
     hookMethodName?.let {
@@ -534,7 +521,7 @@ fun PackageParam.disableUpdate(versionCode: Int) {
         in 758..788 -> "com.qidian.QDReader.util.z4"
         in 792..796 -> "com.qidian.QDReader.util.i5"
         in 800..834 -> "com.qidian.QDReader.util.l5"
-        in 842..868 -> "com.qidian.QDReader.util.m5"
+        in 842..872 -> "com.qidian.QDReader.util.m5"
         else -> null
     }
     neddHookClass?.hook {
@@ -564,6 +551,7 @@ fun PackageParam.disableUpdate(versionCode: Int) {
         827 -> "v4.h"
         in 834..843 -> "t4.h"
         in 850..868 -> "u4.h"
+        872 -> "s4.h"
         else -> null
     }
     neddHookClass2?.hook {

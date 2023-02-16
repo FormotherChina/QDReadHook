@@ -45,7 +45,7 @@ fun PackageParam.interceptGeetest(version: Int) {
  */
 fun PackageParam.interceptPrivacyPolicy(version: Int) {
     when (version) {
-        868 -> {
+        in 868..880 -> {
             findClass("com.qidian.QDReader.ui.activity.MainGroupActivity").hook {
                 injectMember {
                     method {
@@ -64,10 +64,11 @@ fun PackageParam.interceptPrivacyPolicy(version: Int) {
 
 /**
  * 拦截同意隐私政策弹框
+ * btnAgree
  */
 fun PackageParam.interceptAgreePrivacyPolicy(version: Int) {
     when (version) {
-        868 -> {
+        in 868..872 -> {
             findClass("com.qidian.QDReader.util.w4").hook {
                 injectMember {
                     method {
@@ -90,7 +91,7 @@ fun PackageParam.interceptAgreePrivacyPolicy(version: Int) {
  */
 fun PackageParam.interceptWebSocket(version: Int) {
     when (version) {
-        868 -> {
+        in 868..872 -> {
             findClass("com.qidian.QDReader.component.msg.c").hook {
                 injectMember {
                     method {
@@ -112,7 +113,7 @@ fun PackageParam.interceptWebSocket(version: Int) {
  */
 fun PackageParam.interceptQSNModeRequest(version: Int) {
     when (version) {
-        868 -> {
+        in 868..880 -> {
             findClass("com.qidian.QDReader.bll.manager.QDTeenagerManager").hook {
                 injectMember {
                     method {
@@ -134,7 +135,7 @@ fun PackageParam.interceptQSNModeRequest(version: Int) {
  */
 fun PackageParam.interceptSplashAdActivity(version: Int) {
     when (version) {
-        868 -> {
+        in 868..880 -> {
             findClass("com.qidian.QDReader.ui.activity.SplashADActivity").hook {
                 injectMember {
                     method {

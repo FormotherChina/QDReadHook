@@ -460,7 +460,7 @@ fun String.printlnNotSupportVersion(versionCode: Int = 0) =
 /**
  * 更新列表选项实体
  */
-fun MutableList<OptionEntity.SelectedModel>.updateSelectedListOptionEntity(newConfigurations: List<OptionEntity.SelectedModel>): List<OptionEntity.SelectedModel> {
+fun MutableList<OptionEntity.SelectedModel>.updateSelectedListOptionEntity(newConfigurations: List<OptionEntity.SelectedModel>): MutableList<OptionEntity.SelectedModel> {
     // 添加新配置
     newConfigurations.forEach { newConfig ->
         if (!any { it.title == newConfig.title }) {
@@ -499,6 +499,26 @@ fun MutableList<OptionEntity.SelectedModel>.findOrPlus(
     find { it.title == title }?.let { config ->
         if (config.selected) {
             iterator.remove()
+        }
+    } ?: plusAssign(
+        OptionEntity.SelectedModel(
+            title = title
+        )
+    )
+    updateOptionEntity()
+}
+
+/**
+ * 查找或添加列表中的数据
+ * @param title 标题
+ */
+fun MutableList<OptionEntity.SelectedModel>.findOrPlus(
+    title: String,
+    actionUnit: () -> Unit = {},
+) = safeRun {
+    find { it.title == title }?.let { config ->
+        if (config.selected) {
+            actionUnit()
         }
     } ?: plusAssign(
         OptionEntity.SelectedModel(

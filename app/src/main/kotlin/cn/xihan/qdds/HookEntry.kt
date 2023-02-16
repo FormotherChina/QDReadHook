@@ -112,6 +112,10 @@ class HookEntry : IYukiHookXposedInit {
                 )
             }
 
+            if (optionEntity.viewHideOption.selectedOption.enableSelectedHide) {
+                selectedOption(versionCode)
+            }
+
             if (optionEntity.viewHideOption.enableSearchHideAllView) {
                 hideSearchAllView(versionCode)
             }
@@ -543,6 +547,25 @@ class HookEntry : IYukiHookXposedInit {
 
              */
 
+            /*
+            findClass("com.qidian.morphing.MorphingCardTitle").hook {
+                injectMember {
+                    method {
+                        name = "getName"
+                        emptyParam()
+                        returnType = StringClass
+                    }
+                    afterHook {
+                        val s = result as? String
+                        "s: $s".loge()
+                        if (s != null && "畅销精选" == s) {
+                            instance.printCallStack()
+                        }
+                    }
+                }
+            }
+
+             */
         }
     }
 
@@ -869,7 +892,7 @@ fun PackageParam.newAutoSignIn(versionCode: Int) {
             }
         }
 
-        in 842..868 -> {
+        in 842..872 -> {
             findClass("com.qidian.QDReader.ui.view.bookshelfview.CheckInReadingTimeViewNew").hook {
                 injectMember {
                     method {
@@ -934,23 +957,43 @@ fun PackageParam.newAutoSignIn(versionCode: Int) {
  */
 fun PackageParam.newAccountLayout(versionCode: Int, enableNewUserAccount: Boolean = true) {
     val needHookClass = when (versionCode) {
-        868 -> "r4.a\$a"
-        else -> null
-    }
-    needHookClass?.hook {
-        injectMember {
-            method {
-                name = "n"
-                emptyParam()
-                returnType = BooleanType
-            }
-            if (enableNewUserAccount) {
-                replaceToTrue()
-            } else {
-                replaceToFalse()
+        868 -> {
+            findClass("r4.a\$a").hook {
+                injectMember {
+                    method {
+                        name = "n"
+                        emptyParam()
+                        returnType = BooleanType
+                    }
+                    if (enableNewUserAccount) {
+                        replaceToTrue()
+                    } else {
+                        replaceToFalse()
+                    }
+                }
             }
         }
-    } ?: "新版我的布局".printlnNotSupportVersion(versionCode)
+
+        872 -> {
+            findClass("p4.a\$a").hook {
+                injectMember {
+                    method {
+                        name = "m"
+                        emptyParam()
+                        returnType = BooleanType
+                    }
+                    if (enableNewUserAccount) {
+                        replaceToTrue()
+                    } else {
+                        replaceToFalse()
+                    }
+                }
+            }
+        }
+
+        else -> "新版我的布局".printlnNotSupportVersion(versionCode)
+    }
+
 }
 
 /**
@@ -1072,7 +1115,7 @@ fun PackageParam.unlockMemberBackground(versionCode: Int) {
  */
 fun PackageParam.freeAdReward(versionCode: Int) {
     when (versionCode) {
-        in 854..868 -> {
+        in 854..872 -> {
             findClass("com.qq.e.comm.managers.plugin.PM").hook {
                 injectMember {
                     method {
@@ -1259,7 +1302,7 @@ fun PackageParam.freeAdReward(versionCode: Int) {
  */
 fun PackageParam.ignoreFansValueJumpLimit(versionCode: Int) {
     when (versionCode) {
-        in 854..868 -> {
+        in 854..872 -> {
             findClass("com.qidian.QDReader.util.ValidateActionLimitUtil\$a").hook {
                 injectMember {
                     method {
@@ -1291,7 +1334,7 @@ fun PackageParam.ignoreFansValueJumpLimit(versionCode: Int) {
  */
 fun PackageParam.ignoreFreeSubscribeLimit(versionCode: Int) {
     when (versionCode) {
-        in 854..868 -> {
+        in 854..872 -> {
             findClass("com.qidian.QDReader.component.bll.manager.e1").hook {
                 injectMember {
                     method {

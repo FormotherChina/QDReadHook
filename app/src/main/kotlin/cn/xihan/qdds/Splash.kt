@@ -74,16 +74,22 @@ fun PackageParam.disableSplash(versionCode: Int) {
                 }
             }
 
-            if (versionCode >= 868) {
-                findClass("n6.a").hook {
-                    injectMember {
-                        method {
-                            name = "e"
-                            emptyParam()
-                            returnType = BooleanType
-                        }
-                        replaceToFalse()
+            /**
+             * SettingSplashEnableGDT
+             */
+            val needHookClass = when (versionCode) {
+                868 -> "n6.a"
+                872 -> "l6.a"
+                else -> null
+            }
+            needHookClass?.hook {
+                injectMember {
+                    method {
+                        name = "e"
+                        emptyParam()
+                        returnType = BooleanType
                     }
+                    replaceToFalse()
                 }
             }
         }
