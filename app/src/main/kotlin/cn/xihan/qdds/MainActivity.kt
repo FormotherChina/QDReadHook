@@ -1445,9 +1445,39 @@ fun PurifyScreen(
             TextSetting(title = "隐藏控件设置", showRightIcon = false, bigTitle = true)
 
             Column(modifier = M.padding(4.dp)) {
+                SwitchSetting(
+                    title = "启用抓取底部导航栏",
+                    checked = rememberMutableStateOf(value = HookEntry.optionEntity.viewHideOption.homeOption.enableCaptureBottomNavigation),
+                    onCheckedChange = {
+                        HookEntry.optionEntity.viewHideOption.homeOption.enableCaptureBottomNavigation =
+                            it
+                    }
+                )
+
                 TextSetting(title = "主页-隐藏控件列表", onClick = {
                     context.multiChoiceSelector(HookEntry.optionEntity.viewHideOption.homeOption.configurations)
                 })
+
+                val enableSelectedHide =
+                    rememberMutableStateOf(value = HookEntry.optionEntity.viewHideOption.selectedOption.enableSelectedHide)
+
+                SwitchSetting(
+                    title = "精选-启用选项屏蔽",
+                    checked = enableSelectedHide,
+                    onCheckedChange = {
+                        HookEntry.optionEntity.viewHideOption.selectedOption.enableSelectedHide = it
+                    }
+                )
+
+                if (enableSelectedHide.value) {
+                    TextSetting(
+                        title = "精选-隐藏控件列表",
+                        subTitle = "如若提示没有可用选项,请先打开精选页面滑一滑重启即可",
+                        onClick = {
+                            context.multiChoiceSelector(HookEntry.optionEntity.viewHideOption.selectedOption.configurations)
+                        }
+                    )
+                }
 
                 SwitchSetting(title = "隐藏部分小红点",
                     checked = rememberMutableStateOf(value = HookEntry.optionEntity.viewHideOption.enableHideRedDot),

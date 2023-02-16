@@ -286,11 +286,13 @@ data class OptionEntity(
     ) {
         /**
          * 主页配置
+         * @param enableCaptureBottomNavigation 启用截取底部导航栏
          * @param configurations 主页配置列表
          */
         @Keep
         @Serializable
         data class HomeOption(
+            @SerialName("enableCaptureBottomNavigation") var enableCaptureBottomNavigation: Boolean = false,
             @SerialName("homeConfigurations") var configurations: MutableList<SelectedModel> = mutableListOf(
                 SelectedModel("主页顶部宝箱提示"),
                 SelectedModel("书架每日导读"),

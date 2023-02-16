@@ -4,6 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import com.alibaba.fastjson2.parseObject
 import com.alibaba.fastjson2.toJSONString
 import com.highcapable.yukihookapi.hook.param.PackageParam
@@ -30,10 +32,45 @@ fun PackageParam.homeOption(versionCode: Int, optionValueSet: List<OptionEntity.
             "主页顶部宝箱提示" -> hideMainTopBox(versionCode)
             "书架每日导读" -> hideBookshelfDailyReading(versionCode)
             "书架去找书" -> hideBookshelfFindBook(versionCode)
-            "主页底部导航栏发现" -> hideBottomNavigationFind(versionCode)
+//            "主页底部导航栏发现" -> hideBottomNavigationFind(versionCode)
             "主页底部导航栏红点" -> hideBottomRedDot(versionCode)
         }
     }
+}
+
+/**
+ * 精选-隐藏配置
+ */
+fun PackageParam.selectedOption(versionCode: Int) {
+    when (versionCode) {
+        in 868..872 -> {
+            findClass("com.qidian.morphing.card.BaseMorphingCard").hook {
+                injectMember {
+                    method {
+                        name = "item"
+                        paramCount(1)
+                        returnType = UnitType
+                    }
+                    afterHook {
+                        args[0]?.let {
+                            val name = it.getParam<Any>("data")?.getParam<Any>("cardTitle")
+                                ?.getParam<String>("name")
+//                            "name: $name".loge()
+                            if (name.isNullOrBlank()) return@let
+                            HookEntry.optionEntity.viewHideOption.selectedOption.configurations.findOrPlus(
+                                title = name
+                            ) {
+                                instance<FrameLayout>().visibility = View.GONE
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        else -> "精选-隐藏配置".printlnNotSupportVersion(versionCode)
+    }
+
 }
 
 /**
@@ -91,15 +128,15 @@ fun PackageParam.hideBookshelfDailyReading(versionCode: Int) {
 
         }
 
-        in 827..868 -> {
+        in 827..872 -> {
             val gridAdapterClass = when (versionCode) {
                 in 827..860 -> "com.qidian.QDReader.ui.adapter.i0"
-                868 -> "com.qidian.QDReader.ui.adapter.j0"
+                in 868..872 -> "com.qidian.QDReader.ui.adapter.j0"
                 else -> null
             }
             val listAdapterClass = when (versionCode) {
                 in 827..860 -> "com.qidian.QDReader.ui.adapter.k0"
-                868 -> "com.qidian.QDReader.ui.adapter.l0"
+                in 868..872 -> "com.qidian.QDReader.ui.adapter.l0"
                 else -> null
             }
             gridAdapterClass?.hook {
@@ -145,8 +182,11 @@ fun PackageParam.hideBookshelfDailyReading(versionCode: Int) {
  */
 fun PackageParam.hideBookshelfFindBook(versionCode: Int) {
     when (versionCode) {
-        868 -> {
+        in 868..872 -> {
 
+            /**
+             * QDBookShelfBrowserRecordHolder
+             */
             findClass("com.qidian.QDReader.ui.viewholder.bookshelf.r").hook {
                 injectMember {
                     constructor {
@@ -208,7 +248,7 @@ fun PackageParam.hideSearchAllView(versionCode: Int) {
 fun PackageParam.hideBottomRedDot(versionCode: Int) {
     val needHookClass = when (versionCode) {
         in 758..768 -> "com.qidian.QDReader.ui.widget.maintab.a"
-        in 772..868 -> "com.qidian.QDReader.ui.widget.maintab.e"
+        in 772..872 -> "com.qidian.QDReader.ui.widget.maintab.e"
         else -> null
     }
     needHookClass?.hook {
@@ -220,6 +260,53 @@ fun PackageParam.hideBottomRedDot(versionCode: Int) {
             replaceTo(1)
         }
     } ?: "隐藏底部导航栏红点".printlnNotSupportVersion(versionCode)
+}
+
+/**
+ * 隐藏底部导航栏
+ */
+fun PackageParam.hideBottomNavigation(versionCode: Int) {
+    when (versionCode) {
+        872 -> {
+            findClass("com.qidian.QDReader.ui.widget.maintab.PagerSlidingTabStrip").hook {
+                injectMember {
+                    method {
+                        name = "s"
+                        emptyParam()
+                        returnType = UnitType
+                    }
+                    afterHook {
+                        val i = instance.getView<LinearLayout>("i")
+                        i?.let {
+                            val childCount = it.childCount
+                            for (index in 0 until childCount) {
+                                val childView = it.getChildAt(index) as? RelativeLayout
+                                childView?.let {
+                                    val childViewChildCount = childView.childCount
+                                    for (childViewIndex in 0 until childViewChildCount) {
+                                        if (childView.getChildAt(childViewIndex) is TextView) {
+                                            val textView =
+                                                childView.getChildAt(childViewIndex) as TextView
+                                            val text = textView.text
+                                            HookEntry.optionEntity.viewHideOption.homeOption.configurations.findOrPlus(
+                                                title = "主页底部导航栏$text"
+                                            ) {
+                                                val view = textView.parent as? View
+                                                view?.visibility = View.GONE
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        else -> "隐藏底部导航栏".printlnNotSupportVersion(versionCode)
+    }
 }
 
 /**
@@ -257,7 +344,7 @@ fun PackageParam.findViewHide(
     versionCode: Int,
 ) {
     when (versionCode) {
-        in 860..868 -> {
+        in 860..872 -> {
             findClass("com.qidian.QDReader.ui.fragment.FindFragmentReborn").hook {
                 injectMember {
                     method {
@@ -607,6 +694,7 @@ fun PackageParam.removeQSNYDialog(versionCode: Int) {
     val needHookClass = when (versionCode) {
         in 758..854 -> "com.qidian.QDReader.bll.helper.g1"
         in 858..868 -> "com.qidian.QDReader.bll.helper.m1"
+        872 -> "com.qidian.QDReader.bll.helper.k1"
         else -> null
     }
     needHookClass?.hook {
@@ -1020,6 +1108,7 @@ fun PackageParam.comicHideBannerAd(versionCode: Int) {
         in 834..843 -> "na.h"
         in 850..860 -> "na.g"
         868 -> "pa.g"
+        872 -> "na.g"
         else -> null
     }
     needHookClass?.hook {
@@ -1047,7 +1136,7 @@ fun PackageParam.comicHideBannerAd(versionCode: Int) {
  */
 fun PackageParam.hideRedDot(versionCode: Int) {
     when (versionCode) {
-        868 -> {
+        in 868..880 -> {
             findClass("com.qidian.QDReader.framework.widget.customerview.SmallDotsView").hook {
                 injectMember {
                     method {

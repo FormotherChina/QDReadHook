@@ -112,6 +112,11 @@ class HookEntry : IYukiHookXposedInit {
                 )
             }
 
+            if (optionEntity.viewHideOption.homeOption.enableCaptureBottomNavigation) {
+                hideBottomNavigation(versionCode)
+            }
+
+
             if (optionEntity.viewHideOption.selectedOption.enableSelectedHide) {
                 selectedOption(versionCode)
             }
