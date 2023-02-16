@@ -1,6 +1,6 @@
 buildscript {
-    val appVersionName by extra("2.0.2")
-    val appVersionCode by extra(202)
+    val appVersionName by extra("2.0.3")
+    val appVersionCode by extra(203)
     val minSdkVersion by extra(24)
     val targetSdkVersion by extra(33)
     val coreVersion by extra("1.9.0")
@@ -13,7 +13,7 @@ buildscript {
     val fastJson2Version by extra("2.0.21.android")
     val kotlinxJsonVersion by extra("1.4.1")
     val coilVersion by extra("2.2.2")
-    val landscapistVersion by extra("2.1.2")
+    val landscapistVersion by extra("2.1.3")
     val kotlinCompilerExtensionVersion by extra("1.4.1-dev-k1.8.10-c312d77f4cb")
 }
 plugins {
